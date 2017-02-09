@@ -1,0 +1,17 @@
+[% META title = 'Feature Requests List' %]
+<h2> Feature Requests</h2>
+<p> User id [% userid %]</p>
+[% FOREACH FR IN FRs %]
+  <h3>[% FR.title %] </h3>
+  <p> [% FR.detail %] ([% FR.id %])</p>
+  <p class="votes"> Upvotes:[% FR.upvotes -%] Downvotes:[% FR.downvotes -%]</p>
+
+  [% #We can access anything in the stash by name -%]
+  [% IF userid == FR.userid %]
+    [Edit]
+  [% END %]
+  [% IF userid != FR.userid %]
+    [Upvote]
+    [Downvote]
+  [% END %]
+[% END %]

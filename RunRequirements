@@ -1,0 +1,20 @@
+Please ensure you have:
+cpanminus installed;
+  
+Catalyst installed;
+  cpanm Catalyst::Devel 
+
+Template Toolkit installed;
+  cpanm Template
+
+SQLite installed
+  sudo apt-get install sqlite3
+
+Catalyst DBIC Schema helper installed:
+  cpanm Catalyst::Helper::Model::DBIC::Schema
+  cpanm DBIx::Class::Schema::Loader
+
+Other unexpected dependencies you may find are required :
+  cpanm Test::NoWarnings String::CamelCase String::ToIdentifier::EN Lingua::EN::Inflect::Phrase
+  cpanm Lingua::EN::Number::IsOrdinal
+  cpanm MooseX::NonMoose
