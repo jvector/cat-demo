@@ -1,17 +1,25 @@
 [% META title = 'Feature Requests List' %]
 <h2> Feature Requests</h2>
-<p> User id [% userid %]</p>
+<!-- <p> User id [% userid %]</p> -->
 [% FOREACH FR IN FRs %]
   <h3>[% FR.title %] </h3>
-  <p> [% FR.detail %] ([% FR.id %])</p>
+  <p> [% FR.detail %] (FR id is [% FR.id %])</p>
+  <p> (from user #[% FR.userid.id %] </p>
   <p class="votes"> Upvotes:[% FR.upvotes -%] Downvotes:[% FR.downvotes -%]</p>
 
-  [% #We can access anything in the stash by name -%]
-  [% IF userid == FR.userid %]
-    [Edit]
+  [% #Generate a URL for the edit link of each FR that is written by this user %]
+  [% #We can get the user id, like anything else in the stash, by name -%]
+
+  [% IF userid == FR.userid.id %]
+      <a href="[% c.uri_for('/fr/edit/') -%][% FR.id -%]">[Edit this request]</a>
   [% END %]
-  [% IF userid != FR.userid %]
-    [Upvote]
-    [Downvote]
+
+  [% # Allow users to up/downvote FR's that are not their own. %]
+  [% # Track the user ID so it could be possible to block multiple upvotes %]
+      
+  [% IF userid != FR.userid.id %]
+      <a href="[% c.uri_for('/fr/upvote/') -%][% FR.id -%]/[% userid -%]">[Upvote]</a>
+      <a href="[% c.uri_for('/fr/downvote/') -%][% FR.id -%]/[% userid -%]">[Downvote]</a>
   [% END %]
+
 [% END %]

@@ -37,19 +37,53 @@ sub index :Path :Args(0) {
 sub list :Local {
     my ( $self, $c ) = @_;
 
-    # Retrieve all FRs and store in stash (eventually)....
-    $c->stash(FRs => [$c->model('DB::FR')->all]);
-    # template will show upvote,downvote buttons if FR userID is not the current userid
-    # template will show Edit button if FR userID is the current userid    
+    # Let template know the current user id:
+    # Template will show upvote,downvote buttons if FR userID is not the current userid
+    # Template will show Edit button if FR userID is the current userid    
 
-    # just for debug...
-    #$c->stash(userid => 11);
-    #$c->stash(FRs => [
-#		  { id=>1, title=> 'dummy1', detail => 'detail dummy1', upvotes => 3, downvotes => 4, userid => 22},
-#		  { id=>2, title=> 'dummy2', detail => 'detail dummy2', upvotes => 2, downvotes => 2, userid => 11},
-#	      ]);
-    
+    # Just for debug...
+    $c->stash(userid => 3);
+
+    # Retrieve all FRs and store in stash ((obviously need to page if result set too big)
+    $c->stash(FRs => [$c->model('DB::FR')->all]);
+
     $c->stash(template=>'fr_list.tt');
+}
+
+sub edit :Local {
+    my ( $self, $c, @args ) = @_;
+    my $fr_id = $args[0];
+    $c->stash(FR => $c->model('DB::FR')->find($fr_id));
+    $c->stash(template=>'fr_edit.tt');
+}
+
+sub edit_save :Local {
+    my ($self, $c) = @_;
+ 
+    # Retrieve the values from the form
+    my $title     = $c->request->params->{title}     || '(none)';
+    my $detail    = $c->request->params->{detail}    || '(none)';
+ 
+    # Create the book
+    # my $book = $c->model('DB::Book')->create({
+    #         title   => $title,
+    #         rating  => $rating,
+    #     });
+    # # Handle relationship with author
+    # $book->add_to_book_authors({author_id => $author_id});
+    # # Note: Above is a shortcut for this:
+    # # $book->create_related('book_authors', {author_id => $author_id});
+ 
+    # # Store new model object in stash and set template
+    # $c->stash(book     => $book,
+    #           template => 'books/create_done.tt2');
+}
+
+sub upvote :Local {
+    my ( $self, $c, @args ) = @_;
+    warn "upvote called with args $args[0], $args[1]\n";
+    # add upvote to ORM
+    $c->forward('list');    
 }
 
 
