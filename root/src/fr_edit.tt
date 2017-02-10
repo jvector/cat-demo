@@ -1,6 +1,9 @@
 [% META title = 'Feature Request Detail' %]
 <h2> Feature Request Detail</h2>
-<!-- <p> (User id is [% userid %]) </p> -->
+
+[% IF userid %]
+<p> You are user id : [% userid %] </p>
+[% END %]
 
 <!-- Capture feature request info in a very basic rudimentary form. -->
 
@@ -17,6 +20,7 @@
 [% ELSE %]
 <p> To create your request: <input type="submit" name="Action" value="Create"></p>
 </form>
+[% END %]
 
 [% IF FR.upvotes || FR.downvotes %]
 <p class="votes"> Upvotes:[% FR.upvotes -%] Downvotes:[% FR.downvotes -%]</p>

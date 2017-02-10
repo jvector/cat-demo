@@ -18,3 +18,4 @@ Other unexpected dependencies you may find are required :
   cpanm Test::NoWarnings String::CamelCase String::ToIdentifier::EN Lingua::EN::Inflect::Phrase
   cpanm Lingua::EN::Number::IsOrdinal
   cpanm MooseX::NonMoose
+  

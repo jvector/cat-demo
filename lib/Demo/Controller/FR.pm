@@ -32,6 +32,8 @@ downvote/{id} : increment FR's downvote count
 
 =cut
 
+use Data::Dumper;
+
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
@@ -55,17 +57,19 @@ sub edit :Local {
     my ( $self, $c, @args ) = @_;
     my $fr_id = $args[0];
     my $userid = $args[1];
-    $c->stash(FR => $c->model('DB::FR')->find($fr_id), 
-	      userid => $userid);
+    $c->stash(FR => $c->model('DB::FR')->find($fr_id)); 
+    $c->stash(userid => $userid);
     $c->stash(template=>'fr_edit.tt');
 }
 
 sub create :Local {
     my ( $self, $c, @args ) = @_;
     my $userid = $args[0];
+    warn Dumper("userid is $userid");
     $c->stash(FR => {id=>0,
 		     title=>'Give your feature request a title',
 		     detail=>'Tell us about your feature'});
+    $c->stash(userid => $userid);
     $c->stash(template=>'fr_edit.tt');
 }
 
@@ -79,11 +83,14 @@ sub edit_save :Local {
     my $id        = $c->request->params->{id};
     my $action    = $c->request->params->{Action};
     delete $c->request->params->{Action};
+
+    use Data::Dumper; warn Dumper($c->request->params);
     
     if ($action eq 'Update') {
 	$c->model( 'DB::FR' )->find($id)->update( $c->request->params );
     }
     elsif ($action eq 'Create') {
+	delete $c->request->params->{id}; # delete the mock zero ID
 	$c->model('DB::FR')->create( $c->request->params );
     }
     elsif ($action eq 'Close') {
@@ -95,6 +102,7 @@ sub edit_save :Local {
     }
     
     # Back to main list page
+    $c->stash(userid => $userid);
     $c->forward('list');    
 }
 

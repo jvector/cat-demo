@@ -15,17 +15,18 @@ CREATE TABLE fr(
        id	  INTEGER PRIMARY KEY AUTOINCREMENT,
        title 	  TEXT,
        detail  	  TEXT,
-       upvotes    INTEGER,
-       downvotes  INTEGER,     
-       userid	  INTEGER REFERENCES user(id)
+       upvotes    INTEGER DEFAULT 0,
+       downvotes  INTEGER DEFAULT 0,     
+       userid	  INTEGER REFERENCES user(id),
+       status     TEXT
 );
 
 INSERT INTO user VALUES (1, 'Cat Lover');
 INSERT INTO user VALUES (2, 'Foodie');
 INSERT INTO user VALUES (3, 'Audiophile');
 
-INSERT INTO fr VALUES (1, 'More Kittens!', 'Please can we have more kittens? Pleeassse?', 5, 4, 1);
-INSERT INTO fr VALUES (2, 'Why no recipes?', 'Me hungry all the time! I need food recipes!', 0, 3, 2);
-INSERT INTO fr VALUES (3, 'MP3 files', 'I need soundz',2,0,3);
-INSERT INTO fr VALUES (4, 'No dogs, no loud noises','My cat hates them',0,2,1);
-INSERT INTO fr VALUES (5, 'Keep up to date', 'get the latest sounds here http://iwillspamyou.me.me',0,12,3);
+INSERT INTO fr VALUES (1, 'More Kittens!', 'Please can we have more kittens? Pleeassse?', 5, 4, 1,'');
+INSERT INTO fr VALUES (2, 'Why no recipes?', 'Me hungry all the time! I need food recipes!', 0, 3, 2,'');
+INSERT INTO fr VALUES (3, 'MP3 files', 'I need soundz',2,0,3,'');
+INSERT INTO fr VALUES (4, 'No dogs, no loud noises','My cat hates them',0,2,1,'');
+INSERT INTO fr VALUES (5, 'Keep up to date', 'get the latest sounds here http://iwillspamyou.me.me',0,12,3,'');

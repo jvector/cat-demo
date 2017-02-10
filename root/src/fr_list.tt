@@ -30,7 +30,7 @@
 [% END %]
 
 [% IF userid %]
-  <a href="[% c.uri_for('/fr/create/') -%]/[% userid -%]">[Add A Feature Request!]</a>
+  <a href="[% c.uri_for('/fr/create/') -%][% userid -%]">[Add A Feature Request!]</a>
 [% ELSE %]
   <a href="[% c.uri_for('/fr/signin/') -%]">[Sign in to Vote or to Add A Feature Request!]</a>
 [% END %]
