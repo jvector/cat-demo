@@ -12,6 +12,10 @@ Demo::Controller::FR - Catalyst Controller
 
 Catalyst Controller for Feature Requests.
 
+We don't have proper session management here, so we end up having to
+shuttle the signed-in userid back and forth in the stash in order to
+persist the signed-in state, which is rather ugly.
+
 =head1 METHODS
 
 list : list all existing FRs
@@ -41,9 +45,6 @@ sub list :Local {
     # Template will show upvote,downvote buttons if FR userID is not the current userid
     # Template will show Edit button if FR userID is the current userid    
 
-    # Just for debug...
-    $c->stash(userid => 3);
-
     # Retrieve all FRs and store in stash ((obviously need to page if result set too big)
     $c->stash(FRs => [$c->model('DB::FR')->all]);
 
@@ -53,7 +54,18 @@ sub list :Local {
 sub edit :Local {
     my ( $self, $c, @args ) = @_;
     my $fr_id = $args[0];
-    $c->stash(FR => $c->model('DB::FR')->find($fr_id));
+    my $userid = $args[1];
+    $c->stash(FR => $c->model('DB::FR')->find($fr_id), 
+	      userid => $userid);
+    $c->stash(template=>'fr_edit.tt');
+}
+
+sub create :Local {
+    my ( $self, $c, @args ) = @_;
+    my $userid = $args[0];
+    $c->stash(FR => {id=>0,
+		     title=>'Give your feature request a title',
+		     detail=>'Tell us about your feature'});
     $c->stash(template=>'fr_edit.tt');
 }
 
@@ -61,28 +73,86 @@ sub edit_save :Local {
     my ($self, $c) = @_;
  
     # Retrieve the values from the form
-    my $title     = $c->request->params->{title}     || '(none)';
-    my $detail    = $c->request->params->{detail}    || '(none)';
- 
-    # Create the book
-    # my $book = $c->model('DB::Book')->create({
-    #         title   => $title,
-    #         rating  => $rating,
-    #     });
-    # # Handle relationship with author
-    # $book->add_to_book_authors({author_id => $author_id});
-    # # Note: Above is a shortcut for this:
-    # # $book->create_related('book_authors', {author_id => $author_id});
- 
-    # # Store new model object in stash and set template
-    # $c->stash(book     => $book,
-    #           template => 'books/create_done.tt2');
+    my $title     = $c->request->params->{title}     || '(omitted)';
+    my $detail    = $c->request->params->{detail}    || '(omitted)';
+    my $userid    = $c->request->params->{userid};
+    my $id        = $c->request->params->{id};
+    my $action    = $c->request->params->{Action};
+    delete $c->request->params->{Action};
+    
+    if ($action eq 'Update') {
+	$c->model( 'DB::FR' )->find($id)->update( $c->request->params );
+    }
+    elsif ($action eq 'Create') {
+	$c->model('DB::FR')->create( $c->request->params );
+    }
+    elsif ($action eq 'Close') {
+	$c->model( 'DB::FR' )->find($id)->update({ status => 'Closed'});
+	...
+    }
+    else {
+	$c->detach('/error/',"unrecognised action $action");
+    }
+    
+    # Back to main list page
+    $c->forward('list');    
 }
 
 sub upvote :Local {
     my ( $self, $c, @args ) = @_;
-    warn "upvote called with args $args[0], $args[1]\n";
-    # add upvote to ORM
+    my $id = $args[0];
+    my $userid = $args[1];
+
+    # add upvote to ORM -- 
+    # the following came from StackOverflow and looks odd, 
+    # (and screws emacs' syntax directed colouring :) but hey it works..
+    $c->model('DB::FR')->find($id)->update ({upvotes => \'upvotes + 1'});
+
+    $c->stash({userid => $userid});
+    $c->forward('list');    
+}
+
+sub downvote :Local {
+    my ( $self, $c, @args ) = @_;
+    my $id = $args[0];
+    my $userid = $args[1];
+
+    # add dowvote to ORM -- 
+    $c->model('DB::FR')->find($id)->update ({downvotes => \'downvotes + 1'});
+
+    $c->stash({userid => $userid});
+    $c->forward('list');    
+}
+
+sub signin :Local {
+    my ( $self, $c ) = @_;
+    $c->stash(template=>'fr_signin.tt');
+}
+
+sub signin_save :Local {
+    my ($self, $c) = @_;
+ 
+    # Retrieve the name value from the form,
+    # create a new user or find an existing one, and stash the user ID
+    my $name = $c->request->params->{name};
+
+    my ($user, $userid) ;
+    my $user_rs = $c->model('DB::User')->search(name => $name); 
+
+    if ($user = $user_rs->next) { # we exist!
+	$userid = $user->id;
+	warn "existing user $userid : $name\n";	
+    }
+    else   # User isn't yet - create one and get its ID
+    {
+	$user = $c->model('DB::User')->create( {name => $name} );
+	$userid = $user->id;
+	warn "created user $userid : $name\n";
+    }
+
+    $c->stash({userid => $userid, username => $name});
+    
+    # Back to main list page
     $c->forward('list');    
 }
 

@@ -1,0 +1,10 @@
+[% META title = 'Sign In' %]
+<h2> Sign In</h2>
+
+<form method="post" action="[% c.uri_for('signin_save') %]">
+
+<table>
+  <tr><td>Your Name:</td><td><input type="text" name="name"></td></tr>
+</table>
+<p> <input type="submit" name="Submit" value="Submit"></p>
+</form>

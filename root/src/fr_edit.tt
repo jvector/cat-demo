@@ -1,17 +1,23 @@
 [% META title = 'Feature Request Detail' %]
 <h2> Feature Request Detail</h2>
+<!-- <p> (User id is [% userid %]) </p> -->
 
 <!-- Capture feature request info in a very basic rudimentary form. -->
 
-[% META title = 'Manual Form Book Create' -%]
- 
 <form method="post" action="[% c.uri_for('edit_save') %]">
+  <input type="hidden" name="userid" value="[% userid -%]">
+  <input type="hidden" name="id" value="[% FR.id -%]">
 <table>
   <tr><td>Title:</td><td><input type="text" name="title" value="[% FR.title -%]"></td></tr>
   <tr><td>Detail:</td><td><textarea rows="5" cols="40" name="detail">[% FR.detail -%]</textarea></td></tr>
 </table>
-<p> To save your request: <input type="submit" name="Action" value="Save"></p>
+[%IF FR.id %]
+<p> To update your request: <input type="submit" name="Action" value="Update"></p>
 <p> To close your request: <input type="submit" name="Action" value="Close"></p>
+[% ELSE %]
+<p> To create your request: <input type="submit" name="Action" value="Create"></p>
 </form>
 
+[% IF FR.upvotes || FR.downvotes %]
 <p class="votes"> Upvotes:[% FR.upvotes -%] Downvotes:[% FR.downvotes -%]</p>
+[% END %]
