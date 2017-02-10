@@ -25,3 +25,13 @@
 [% IF FR.upvotes || FR.downvotes %]
 <p class="votes"> Upvotes:[% FR.upvotes -%] Downvotes:[% FR.downvotes -%]</p>
 [% END %]
+
+[% IF 1 == 0 %] [% # intentionally false , change when wanted %]
+[% 
+  "<pre>";
+  USE Dumper(Indent=1, Pad="<br>" );
+  Dumper.dump(FR) | html
+  "</pre>";
+%]
+[% END %]
+

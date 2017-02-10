@@ -1,13 +1,21 @@
 [% META title = 'Feature Requests List' %]
-<h2> Feature Requests</h2>
+<h1> Feature Requests</h1>
 
 <!-- for debug: better if this was hidden with CSS .. -->
 [% IF userid %]
-<p> Welcome [% username -%]. You are user id : [% userid %] </p>
+<p> Welcome [% username -%]. You are user id : [% userid %]
+<a href="[% c.uri_for('/') -%]">[Sign Out]</a></p>
 [% END %]
 
+[% IF userid %]
+  <a href="[% c.uri_for('/fr/create/') -%][% userid -%]">[Add A Feature Request!]</a>
+[% ELSE %]
+  <a href="[% c.uri_for('/fr/signin/') -%]">[Sign in to Vote or to Add A Feature Request!]</a>
+[% END %]
+<h2> Here are our top Feature Requests</h2>
+
 [% FOREACH FR IN FRs %]
-  <h3>[% FR.title %] </h3>
+  <h3>[% FR.title %] [% IF FR.status=='Closed' %](Closed)[% END -%]</h3>
   <p> [% FR.detail %] </p>
 
   <p class="votes"> Upvotes:[% FR.upvotes -%] Downvotes:[% FR.downvotes -%]</p>
@@ -29,8 +37,10 @@
 
 [% END %]
 
+<p>
 [% IF userid %]
   <a href="[% c.uri_for('/fr/create/') -%][% userid -%]">[Add A Feature Request!]</a>
 [% ELSE %]
   <a href="[% c.uri_for('/fr/signin/') -%]">[Sign in to Vote or to Add A Feature Request!]</a>
 [% END %]
+</p>

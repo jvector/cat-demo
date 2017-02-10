@@ -57,17 +57,24 @@ __PACKAGE__->table("fr");
 =head2 upvotes
 
   data_type: 'integer'
+  default_value: 0
   is_nullable: 1
 
 =head2 downvotes
 
   data_type: 'integer'
+  default_value: 0
   is_nullable: 1
 
 =head2 userid
 
   data_type: 'integer'
   is_foreign_key: 1
+  is_nullable: 1
+
+=head2 status
+
+  data_type: 'text'
   is_nullable: 1
 
 =cut
@@ -80,11 +87,13 @@ __PACKAGE__->add_columns(
   "detail",
   { data_type => "text", is_nullable => 1 },
   "upvotes",
-  { data_type => "integer", is_nullable => 1 },
+  { data_type => "integer", default_value => 0, is_nullable => 1 },
   "downvotes",
-  { data_type => "integer", is_nullable => 1 },
+  { data_type => "integer", default_value => 0, is_nullable => 1 },
   "userid",
   { data_type => "integer", is_foreign_key => 1, is_nullable => 1 },
+  "status",
+  { data_type => "text", is_nullable => 1 },
 );
 
 =head1 PRIMARY KEY
@@ -122,8 +131,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-02-09 17:33:03
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:3EScd/qVIAtsxIe4Z3+f5Q
+# Created by DBIx::Class::Schema::Loader v0.07046 @ 2017-02-10 10:10:37
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:mcIH5Pf6+92YCk2HM8Ul/g
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

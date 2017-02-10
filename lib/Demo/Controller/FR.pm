@@ -90,12 +90,12 @@ sub edit_save :Local {
 	$c->model( 'DB::FR' )->find($id)->update( $c->request->params );
     }
     elsif ($action eq 'Create') {
-	delete $c->request->params->{id}; # delete the mock zero ID
+	# Delete the fake zero ID from params before create..
+	delete $c->request->params->{id}; 
 	$c->model('DB::FR')->create( $c->request->params );
     }
     elsif ($action eq 'Close') {
 	$c->model( 'DB::FR' )->find($id)->update({ status => 'Closed'});
-	...
     }
     else {
 	$c->detach('/error/',"unrecognised action $action");
